@@ -29,7 +29,9 @@ SECRET_KEY = '@xn(6gfl3dwz#2-f8x2v3w%g4zl97e=s&08tie(4j@po4c)h%1'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['sopra-chatbot.herokuapp.com']
+ALLOWED_HOSTS = ['sopra-chatbot.herokuapp.com','127.0.0.1']
+
+SESSION_ENGINE= 'django.contrib.sessions.backends.cached_db'
 
 
 # Application definition
