@@ -12,7 +12,9 @@
 
     <script type="text/javascript">
         $(document).ready(function () {
-
+            var $div=$("<div>",{id:"answer",style:"color:white; background-color:blue;padding: 25px;margin: 25px;max-width:60%;clear:both;float:left;border-radius: 25px"});
+                $div.text("Hey, You can ask me anything about Sopra Steria. I'll try my best to anser all your queries.")
+            $('#chatbox').append($div)
            $('#sub').click(function(e){
                e.preventDefault();
               q=$('#query').val();

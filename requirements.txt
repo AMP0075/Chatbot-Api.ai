@@ -5,4 +5,7 @@ ujson==1.35
 gunicorn==19.6.0
 dj_database_url
 psycopg2
+pandas
+sklearn
+numpy
 
