@@ -9,7 +9,7 @@ from .Model.googleapimod import *
 def googleapi(request):
     if request.is_ajax():
         q=request.POST['query']
-        ans=getResult(q,request.session._get_or_create_session_key())
+        ans=getResult(q,request)
         return HttpResponse(ans)
 
     return render(request,'chat_ml/chatengine.html',{'name':'manobhav'})
