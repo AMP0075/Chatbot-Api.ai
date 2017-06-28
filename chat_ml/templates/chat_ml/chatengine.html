@@ -1,27 +1,39 @@
-
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <title>Chatbot</title>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-{#    <link rel="stylesheet" href="stylesheetchatengine.css">#}
 
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 <script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 
     <script type="text/javascript">
         $(document).ready(function () {
-            var $div=$("<div>",{id:"answer",style:"color:white; background-color:blue;padding: 25px;margin: 25px;max-width:60%;clear:both;float:left;border-radius: 25px"});
-                $div.text("Hey, You can ask me anything about Sopra Steria. I'll try my best to anser all your queries.")
-            $('#chatbox').append($div)
+
+            console.log("{{ name }}")
+            var $div=$("<div>",{'class':"answer",style:"color:white; background-color:blue;padding: 25px;margin: 25px;max-width:60%;clear:both;float:left;border-radius: 25px"});
+                $div.text("Hey , You can ask me anything about Sopra Steria. I'll try my best to anwser all your queries.")
+            $('#chatbox').append($div);
+
+            $(document).on('click','.Jobs',function (e)  {
+                e.preventDefault()
+
+                var $desc=$("<div>",{id:"desc",'class':"answer",style:"color:white; background-color:blue;padding: 25px;margin: 25px;max-width:60%;clear:both;float:left;border-radius: 25px"});
+                $desc.text($(this).data('desc'));
+                $('#chatbox').append($desc);
+                window.scrollTo(0,document.body.scrollHeight);
+
+            });
+
+
            $('#sub').click(function(e){
                e.preventDefault();
               q=$('#query').val();
               $('#query').val("");
-                var $div=$("<div>",{id:"question",style:"color:black; background-color:#edeeef;font-size:15px;padding: 25px;margin: 25px;max-width:60%;clear:both;float:right;border-radius: 25px"});
-                $div.text(q)
-               $('#chatbox').append($div)
+                var $div=$("<div>",{'class':"question",style:"color:black; background-color:#edeeef;font-size:15px;padding: 25px;margin: 25px;max-width:60%;clear:both;float:right;border-radius: 25px"});
+                $div.text(q);
+               $('#chatbox').append($div);
 
               $.ajax({
                 type: 'POST',
@@ -32,9 +44,38 @@
                 },
                 success: function (data) {
                     console.log(data)
-                    var $div=$("<div>",{id:"answer",style:"color:white; background-color:blue;padding: 25px;margin: 25px;max-width:60%;clear:both;float:left;border-radius: 25px"});
-                $div.text(data)
-               $('#chatbox').append($div)
+
+
+                    if(data['type']=='speech'){
+                        var $speechdiv=$("<div>",{'class':"answer",style:"color:white; background-color:blue;padding: 25px;margin: 25px;max-width:60%;clear:both;float:left;border-radius: 25px"});
+                        $speechdiv.text(data['res'])
+                        $('#chatbox').append($speechdiv)
+
+                    }
+                    else if(data['type']=='jobs'){
+
+                        for(var i=0;i<data['res'].length;i++){
+                            var $jobdiv=$("<div>",{id:"job"+i,"class":'Jobs answer',style:"color:white; background-color:blue;padding: 25px;margin: 25px;max-width:60%;clear:both;float:left;border-radius: 25px"});
+                            var $jobname=$("<div>");
+                            $jobname.text(data['res'][i]['jobname']);
+                            var $skills=$("<div>",{id:"skill"+i});
+                            $skills.text("Relevant Skills- "+data['res'][i]['skill']);
+                            $jobdiv.append($jobname);
+                            $jobdiv.append($skills);
+                            $jobdiv.data('desc',data['res'][i]['jobdesc']);
+$                           ('#chatbox').append($jobdiv)
+                        }
+                        var $div=$("<div>",{'class':"answer",style:"color:white; background-color:blue;padding: 25px;margin: 25px;max-width:60%;clear:both;float:left;border-radius: 25px"});
+
+                        $div.text("You can click on the Job Profile for more details.");
+                        $('#chatbox').append($div)
+
+
+
+                    }
+
+
+                    console.log("{{ manu }}")
 
                     window.scrollTo(0,document.body.scrollHeight);
                 }

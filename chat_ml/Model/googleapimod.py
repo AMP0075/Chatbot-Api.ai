@@ -1,12 +1,11 @@
 import requests
 import json
-import logging
 from chat_ml.models import *
 import numpy
 from sklearn.externals import joblib
 def getResult(q,key):
-    # return jobfunc(['data science','python','django','java'],3)
-    logger=logging.getLogger(__name__)
+    masteritem={}
+    masteritem['type']='speech'
     url = 'https://api.api.ai/v1/query'
     payload = {'v': '20170101', 'query':q, 'lang': 'en', 'sessionId': key}
     headers = {'Authorization': 'Bearer d3c00533fe4a43b584828eabdc146726'}
@@ -21,25 +20,25 @@ def getResult(q,key):
         return jobfunc(l,exp)
 
 
-
-    return j['result']['fulfillment']['speech']
+    masteritem['res']=j['result']['fulfillment']['speech']
+    return masteritem
 
 
 
 def jobfunc(l,exp):
-    res=""
+    items=[]
     myskills=""
     cv=joblib.load('chat_ml/Data/skillvector.pkl')
     for i in l:
         myskills=myskills+i.replace(" ","")+" "
 
     myskillvector=cv.transform([myskills])
-
     p = set(Jobs.objects.filter(skillset__name__in=l))
 
+
+    #print(serializers.serialize('json', p))
     for i in p:
         jobskills=""
-        res=res+i.name+"\n"
 
         for j in i.skillset.all():
             jobskills=jobskills+ j.name.replace(" ","")+" "
@@ -48,8 +47,15 @@ def jobfunc(l,exp):
 
 
         commonskill=numpy.logical_and(myskillvector.toarray(),jobskillvector.toarray())
-        res=res+ " for the skill/s-"+" ".join(cv.inverse_transform(commonskill)[0])+" "
-        #print(type(i.skillset.))
+        item={}
+        item['jobname']=i.name
+        item['jobdesc']=i.desc
+        item['skill']=", ".join(cv.inverse_transform(commonskill)[0])
+        items.append(item)
 
-    return res
+    masteritem={}
+    masteritem['type']='jobs'
+    masteritem['res']=items
+
+    return masteritem
 

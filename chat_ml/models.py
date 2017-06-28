@@ -11,7 +11,7 @@ class Skill(models.Model):
 
 class Jobs(models.Model):
     name=models.CharField(max_length=30)
-    desc=models.CharField(max_length=100)
+    desc=models.CharField(max_length=1000)
     expmax=models.IntegerField()
     skillset=models.ManyToManyField(Skill)
 
