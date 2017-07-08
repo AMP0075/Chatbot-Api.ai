@@ -2,10 +2,10 @@ from sklearn.externals import joblib
 from sklearn.feature_extraction.text import CountVectorizer
 
 from chat_ml.models import *
-
+from django.db.models import F
 
 str = ""
-s = Skill.objects.all()
+s = Jobs.objects.all().update(desc=F('desc')+". For further information visit- http://www.soprasteria.in/careers/current-openings" )
 cv = CountVectorizer()
 for i in s:
     str = str + i.name+ " "

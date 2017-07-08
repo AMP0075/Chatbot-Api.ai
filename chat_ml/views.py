@@ -16,8 +16,10 @@ def googleapi(request):
     if request.is_ajax():
         q=request.POST['query']
         ans=getResult(q,request.session['key'])
-        #print(json.dumps(items))
-        #return HttpResponse(ans)
+        if ans['type']=='speech' and 'skills' in ans['res']:
+            s = Skill.objects.all()
+            ans['res']+=" You can choose from- "+ ', '.join([i.name.replace('_',' ').title() for i in s])
+
         return HttpResponse(json.dumps(ans), content_type="application/json")
 
     return render(request,'chat_ml/chatengine.html')
